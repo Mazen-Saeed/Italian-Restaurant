@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+    env_file:
+      - ./auth-service/.env
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    env_file:
+      - ./api-gateway/.env
