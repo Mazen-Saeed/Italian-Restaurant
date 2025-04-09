@@ -9,11 +9,3 @@ services:
       NODE_ENV: production
     env_file:
       - ./auth-service/.env
-  api-gateway:
-    build: ./api-gateway
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: production
-    env_file:
-      - ./api-gateway/.env

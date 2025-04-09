@@ -5,13 +5,38 @@ services:
     command: nodemon index.js
     environment:
       NODE_ENV: development
+    env_file:
+      - ./auth-service/.env
     volumes:
       - ./auth-service:/app
       - /app/node_modules
-  api-gateway:
-    command: nodemon index.js
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
     environment:
-      NODE_ENV: development
+      - DB_HOST=postgres
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5433:5432"
     volumes:
-      - ./api-gateway:/app
-      - /app/node_modules
+      - postgres_data:/var/lib/postgresql/data
+
+  db-migrate:
+    build: ./migrations
+    depends_on:
+      - postgres
+    profiles:
+      - setup
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+
+volumes:
+  postgres_data:
