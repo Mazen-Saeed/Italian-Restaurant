@@ -4,6 +4,7 @@
   justify-content: space-between;
   align-items: center;
   background: var(--color-black);
+
   padding: 1rem 2rem;
 }
 
@@ -22,6 +23,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   list-style: none;
 }
 
@@ -53,7 +55,7 @@
 .app__navbar-login div {
   width: 1px;
   height: 30px;
-  background-color: var(--color-grey);
+  background: var(--color-grey);
 }
 
 .app__navbar-smallscreen {
@@ -68,6 +70,7 @@
   height: 100vh;
   background: var(--color-black);
   transition: 0.5s ease;
+
   flex-direction: column;
   z-index: 5;
 }
@@ -76,6 +79,7 @@
   font-size: 27px;
   color: var(--color-golden);
   cursor: pointer;
+
   position: absolute;
   top: 20px;
   right: 20px;
@@ -98,9 +102,9 @@
   color: var(--color-white);
 }
 
-@media screen and (max-width: 2000px) {
+@media screen and (min-width: 2000px) {
   .app__navbar-logo img {
-    width: 170px;
+    width: 210px;
   }
 }
 
@@ -108,6 +112,7 @@
   .app__navbar-links {
     display: none;
   }
+
   .app__navbar-smallscreen {
     display: flex;
   }
@@ -117,9 +122,11 @@
   .app__navbar {
     padding: 1rem;
   }
+
   .app__navbar-login {
     display: none;
   }
+
   .app__navbar-logo img {
     width: 110px;
   }
