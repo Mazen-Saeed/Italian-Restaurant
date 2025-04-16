@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Benvenuto a Italiano!</title>
+    <style>
+      body {
+        font-family: "Helvetica Neue", sans-serif;
+        background-color: #fff8f0;
+        color: #333;
+        padding: 20px;
+      }
+      .container {
+        border: 1px solid #e0c3a0;
+        border-radius: 10px;
+        padding: 30px;
+        background-color: #fff;
+        max-width: 600px;
+        margin: auto;
+      }
+      .logo {
+        font-size: 32px;
+        color: #b02b2b;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #b02b2b;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">🍝 Italiano</div>
+      <h2>Ciao, {{name}}!</h2>
+      <p>
+        Welcome to <strong>Italiano</strong> – the home of real Italian flavor!
+      </p>
+      <p>
+        Please confirm your email address by clicking the button below. We can't
+        wait to serve you!
+      </p>
+      <a href="{{url}}" class="button">Confirm your email</a>
+      <p style="margin-top: 30px">
+        If you didn’t sign up for Italiano, you can safely ignore this email.
+      </p>
+      <p>
+        A presto!<br />
+        <strong>The Italiano Team 🇮🇹</strong>
+      </p>
+    </div>
+  </body>
+</html>

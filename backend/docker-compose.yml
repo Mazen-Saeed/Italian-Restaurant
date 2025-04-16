@@ -1,17 +1,6 @@
 version: "3"
 
 services:
-  auth-service:
-    build: ./auth-service
-    ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=production
-    env_file:
-      - ./auth-service/.env
-    depends_on:
-      - postgres
-
   api-gateway:
     build: ./api-gateway
     environment:
@@ -22,6 +11,25 @@ services:
       - "3000:3000"
     depends_on:
       - auth-service
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./auth-service/.env
+    depends_on:
+      - postgres
+  email-service:
+    build: ./email-service
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3002:3000"
+    env_file:
+      - ./email-service/.env
 
   postgres:
     image: postgres:latest

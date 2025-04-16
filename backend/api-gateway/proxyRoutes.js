@@ -5,6 +5,7 @@ const router = express.Router();
 
 const services = {
   auth: process.env.AUTH_SERVICE_URL,
+  email: process.env.EMAIL_SERVICE_URL,
 };
 
 Object.entries(services).forEach(([path, target]) => {
