@@ -1,8 +1,8 @@
-FROM node:22
+FROM node:23-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm install -g nodemon
 EXPOSE 3000
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]

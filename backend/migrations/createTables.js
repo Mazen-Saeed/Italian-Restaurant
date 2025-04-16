@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { Pool } = require("pg");
 
 const pool = new Pool({
@@ -5,19 +6,27 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: 5432,
+  port: process.env.DB_PORT,
 });
 
-async function checkIfTablesExist() {
+async function dropTables() {
   const client = await pool.connect();
   try {
-    const result = await client.query(`
-            SELECT EXISTS (
-                SELECT FROM information_schema.tables 
-                WHERE table_name = 'users'
-            );
-        `);
-    return result.rows[0].exists;
+    console.log("Dropping existing tables...");
+
+    await client.query(`DROP TABLE IF EXISTS reviews CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS inquiries CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS reservations CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS order_items CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS orders CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS menu_items CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS tables CASCADE`);
+    await client.query(`DROP TABLE IF EXISTS users CASCADE`);
+
+    console.log("All tables dropped successfully");
+  } catch (err) {
+    console.error("Error dropping tables:", err);
+    throw err;
   } finally {
     client.release();
   }
@@ -26,18 +35,13 @@ async function checkIfTablesExist() {
 async function createTables() {
   const client = await pool.connect();
   try {
-    const tablesExist = await checkIfTablesExist();
-    if (tablesExist) {
-      console.log("Tables already exist, skipping creation");
-      return;
-    }
-
     console.log("Creating tables...");
 
     // Create users table
     await client.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
+                name VARCHAR(50) NOT NULL,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 email VARCHAR(100) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
@@ -46,7 +50,8 @@ async function createTables() {
                 address TEXT,
                 phone VARCHAR(20),
                 order_count INTEGER DEFAULT 0,
-                points INTEGER DEFAULT 0
+                points INTEGER DEFAULT 0,
+                verified BOOLEAN DEFAULT false
             );
         `);
 
@@ -140,9 +145,15 @@ async function createTables() {
   }
 }
 
-createTables()
-  .then(() => console.log("Migration completed"))
-  .catch((err) => {
-    console.error("Migration failed:", err);
+async function resetDatabase() {
+  try {
+    await dropTables();
+    await createTables();
+    console.log("Database reset completed successfully");
+  } catch (err) {
+    console.error("Error resetting database:", err);
     process.exit(1);
-  });
+  }
+}
+
+resetDatabase();

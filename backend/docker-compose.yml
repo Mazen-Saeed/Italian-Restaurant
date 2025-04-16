@@ -6,6 +6,34 @@ services:
     ports:
       - "3001:3000"
     environment:
-      NODE_ENV: production
+      - NODE_ENV=production
     env_file:
       - ./auth-service/.env
+    depends_on:
+      - postgres
+
+  api-gateway:
+    build: ./api-gateway
+    environment:
+      NODE_ENV: production
+    env_file:
+      - ./api-gateway/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-service
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
