@@ -14,18 +14,17 @@ const emailTemplates = {
 };
 
 class EmailService {
-  constructor(name, email, token, req) {
+  constructor(name, email, token, req, containerName) {
     this.name = name;
     this.email = email;
     this.token = token;
     this.req = req;
     this.sender = process.env.EMAIL;
+    this.containerName = containerName;
   }
 
   generateURL(endpoint) {
-    return `${this.req.protocol}://${this.req.get(
-      "host"
-    )}/api/auth/${endpoint}/${this.token}`;
+    return `${this.req.protocol}://${this.containerName}/api/auth/${endpoint}/${this.token}`;
   }
 
   async sendEmail(to, subject, text, html) {
@@ -49,7 +48,7 @@ class EmailService {
 
     try {
       await this.sendEmail(this.email, "Confirm Your Email", text, html);
-      console.info(`Confirmation email sent to ${this.user.email}`);
+      console.info(`Confirmation email sent to ${this.email}`);
     } catch (error) {
       console.error(`Error sending confirmation email: ${error}`);
     }

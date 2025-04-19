@@ -4,11 +4,13 @@ const morgan = require("morgan");
 const proxyRoutes = require("./proxyRoutes");
 
 const app = express();
-const PORT = process.env.SERVICE_PORT;
+const PORT = process.env.SERVICE_PORT || 3000;
 
 app.use(morgan("dev"));
-app.use("/api/", proxyRoutes);
 
-app.listen(PORT, () => {
-  console.log(`API Gateway is running on http://localhost:${PORT}`);
+// Remove the /api prefix here
+app.use("", proxyRoutes);
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`API Gateway is running on http://0.0.0.0:${PORT}`);
 });

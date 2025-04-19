@@ -1,3 +1,4 @@
+// api-gateway/proxyRoutes.js
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
@@ -8,15 +9,19 @@ const services = {
   email: process.env.EMAIL_SERVICE_URL,
 };
 
-Object.entries(services).forEach(([path, target]) => {
-  console.log(`I'm here with ${path} and ${target}`);
+// For each entry, mount a proxy at /api/<name>
+Object.entries(services).forEach(([name, target]) => {
   router.use(
-    `/${path}`,
+    `/api/${name}`,
     createProxyMiddleware({
       target,
       changeOrigin: true,
-      pathRewrite: {
-        [`^/${path}`]: "",
+      onError(err, req, res) {
+        console.error(
+          `[Proxy:${name}] ${req.method} ${req.originalUrl} → ${target} failed:`,
+          err.message
+        );
+        res.status(502).json({ error: `${name} service unavailable` });
       },
     })
   );

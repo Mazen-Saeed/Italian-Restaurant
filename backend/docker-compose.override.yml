@@ -10,7 +10,7 @@ services:
       - /app/node_modules
 
   api-gateway:
-    command: nodemon index.js
+    command: nodemon server.js
     environment:
       NODE_ENV: development
     volumes:
@@ -31,3 +31,7 @@ services:
       - postgres
     profiles:
       - setup
+    env_file:
+      - ./migrations/.env
+    networks:
+      - backend-network
