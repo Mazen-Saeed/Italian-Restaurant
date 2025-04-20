@@ -10,6 +10,10 @@ exports.sendEmail = catchAsync(async (req, res, next) => {
 
   const es = new EmailService(toName, toEmail, token, req, containerName);
   if (func === "confirmEmail") await es.sendConfirmationEmail();
+  else if (func === "resetPassword") await es.sendPasswordResetEmail();
+  else {
+    return next(new appError("Invalid function name", 400));
+  }
 
   res.status(200).json({ message: "Email sent successfully" });
   console.log(`Confirmation email sent to ${toEmail}`);

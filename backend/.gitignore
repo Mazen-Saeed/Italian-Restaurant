@@ -1,3 +1,5 @@
 *.env
 *node_modules/
 forYou.txt
+*private.key
+*public.key

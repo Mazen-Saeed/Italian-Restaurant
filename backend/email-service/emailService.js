@@ -11,6 +11,7 @@ const loadTemplate = (templateName) => {
 
 const emailTemplates = {
   confirmation: loadTemplate("confirmationEmail.html"),
+  passwordReset: loadTemplate("passwordResetEmail.html"),
 };
 
 class EmailService {
@@ -51,6 +52,21 @@ class EmailService {
       console.info(`Confirmation email sent to ${this.email}`);
     } catch (error) {
       console.error(`Error sending confirmation email: ${error}`);
+    }
+  }
+
+  async sendPasswordResetEmail() {
+    const url = this.generateURL("resetPassword");
+    const text = `Hi ${this.name}, you requested to reset your password. Click this link to proceed: ${url}`;
+
+    let html = emailTemplates.passwordReset;
+    html = html.replace(/{{name}}/g, this.name).replace(/{{url}}/g, url);
+
+    try {
+      await this.sendEmail(this.email, "Reset Your Password", text, html);
+      console.info(`Password reset email sent to ${this.email}`);
+    } catch (error) {
+      console.error(`Error sending password reset email: ${error}`);
     }
   }
 }

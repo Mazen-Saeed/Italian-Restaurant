@@ -88,7 +88,7 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
   res.status(200).json({ message: "Email confirmed successfully" });
 });
 
-exports.resendConfirmationEmail = catchAsync(async (req, res, next) => {
+exports.resendConfirmationMail = catchAsync(async (req, res, next) => {
   const { email } = req.body;
   if (!email) return next(new AppError("Please provide an email", 400));
   const user = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -125,7 +125,7 @@ exports.login = catchAsync(async (req, res, next) => {
     );
     return next(
       new AppError(
-        "Email not verified, an email with a link to verify teh accound has been sent.",
+        "Email not verified, an email with a link to verify the accound has been sent.",
         401
       )
     );
@@ -155,19 +155,83 @@ exports.login = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       user: {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
+        id: user.rows[0].id,
+        name: user.rows[0].name,
+        username: user.rows[0].username,
+        email: user.rows[0].email,
       },
     },
   });
 });
 
-exports.logout = catchAsync(async (req, res, next) => {});
+exports.logout = catchAsync((req, res) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 0,
+  };
 
-exports.forgetPassword = catchAsync(async (req, res, next) => {});
+  res.clearCookie("accessToken", cookieOptions).status(204).send();
+});
 
-exports.resetPassword = catchAsync(async (req, res, next) => {});
+exports.forgetPassword = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) return next(new AppError("Please provide an email", 400));
 
-exports.protect = catchAsync(async (req, res, next) => {});
+  const user = await pool.query("SELECT * FROM users WHERE email = $1", [
+    email,
+  ]);
+
+  if (user.rows.length === 0) return next(new AppError("User not found", 404));
+
+  const token = generateToken(
+    user.rows[0].id,
+    process.env.JWT_CONFIRM_SECRET,
+    process.env.JWT_CONFIRM_EXPIRATION
+  );
+
+  try {
+    await axios.post(
+      `${process.env.EMAIL_SERVICE_URL}/api/email/sendEmail`,
+      {
+        toName: user.rows[0].name,
+        toEmail: email,
+        token,
+        func: "resetPassword",
+        containerName: process.env.CONTAINER_NAME,
+      },
+      { timeout: 5000 }
+    );
+  } catch (err) {
+    console.error("Error sending password reset email:", err);
+  }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+  const { password, passwordConfirm } = req.body;
+  if (!token) return next(new AppError("No token provided", 400));
+  if (!password || !passwordConfirm)
+    return next(
+      new AppError("Please provide password and passwordConfirm", 400)
+    );
+  if (password !== passwordConfirm)
+    return next(new AppError("Passwords do not match", 400));
+
+  const decoded = verifyToken(token, process.env.JWT_CONFIRM_SECRET);
+  if (!decoded) return next(new AppError("Invalid or expired token", 400));
+
+  const user = await pool.query("SELECT * FROM users WHERE id = $1", [
+    decoded.id,
+  ]);
+  if (user.rows.length === 0) return next(new AppError("User not found", 404));
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  await pool.query("UPDATE users SET password = $1 WHERE id = $2", [
+    hashedPassword,
+    decoded.id,
+  ]);
+
+  res.status(200).json({ message: "Password reset successfully" });
+});
