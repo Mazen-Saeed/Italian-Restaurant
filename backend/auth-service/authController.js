@@ -137,7 +137,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const token = generateToken(
     user.rows[0].id,
-    process.env.JWT_ACCESS_SECRET,
+    null,
     process.env.JWT_ACCESS_EXPIRES
   );
 
