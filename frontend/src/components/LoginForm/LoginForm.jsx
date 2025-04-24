@@ -11,9 +11,16 @@ import { FiMail, FiLock } from "react-icons/fi";
 //Loader
 import { ThreeDots } from "react-loader-spinner";
 
+// auth & redux
+import { connect } from "react-redux";
+import { loginUser } from "../../auth/actions/userActions";
+// import { useHistory } from "react-router-dom";
+
 import "./LoginForm.css";
 
-function LoginForm({ show, onClose, onSwitchForm }) {
+function LoginForm({ show, onClose, onSwitchForm, loginUser }) {
+  // const history = useHistory();
+
   if (!show) return null;
   return (
     <div className="app__loginform ">
@@ -33,8 +40,9 @@ function LoginForm({ show, onClose, onSwitchForm }) {
               .max(30, "Password is too long")
               .required("Required"),
           })}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
             console.log(values);
+            // loginUser(values, history, setFieldError, setSubmitting);
           }}
         >
           {({ isSubmitting }) => (
@@ -98,4 +106,4 @@ function LoginForm({ show, onClose, onSwitchForm }) {
   );
 }
 
-export default LoginForm;
+export default connect(null, { loginUser })(LoginForm);

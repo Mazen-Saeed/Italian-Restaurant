@@ -19,9 +19,16 @@ import {
 //Loader
 import { ThreeDots } from "react-loader-spinner";
 
+// auth & redux
+import { connect } from "react-redux";
+import { signupUser } from "../../auth/actions/userActions";
+// import { useHistory } from "react-router-dom";
+
 import "./SignForm.css";
 
-function SignupForm({ show, onClose, onSwitchForm }) {
+function SignupForm({ show, onClose, onSwitchForm, signupUser }) {
+  // const history = useHistory();
+
   if (!show) return null;
   return (
     <div className="app__SignForm ">
@@ -57,8 +64,9 @@ function SignupForm({ show, onClose, onSwitchForm }) {
               .matches(/^[0-9]{11}$/, "Phone number must be 11 digits"),
             address: Yup.string().required("Required"),
           })}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
             console.log(values);
+            // signupUser(values, history, setSubmitting, setFieldError);
           }}
         >
           {({ isSubmitting }) => (
@@ -156,4 +164,4 @@ function SignupForm({ show, onClose, onSwitchForm }) {
   );
 }
 
-export default SignupForm;
+export default connect(null, { signupUser })(SignupForm);
