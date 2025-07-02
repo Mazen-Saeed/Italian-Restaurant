@@ -1,0 +1,142 @@
+.app__loginform {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 6;
+  overflow: hidden;
+  padding: 2rem 0;
+}
+
+.app__loginform-container {
+  background-color: var(--color-golden);
+  padding: 1.5rem;
+  border-radius: 20px;
+  width: 460px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  margin: auto 0;
+}
+
+/* for Chrome, Safari and Opera */
+.app__loginform-container::-webkit-scrollbar {
+  display: none;
+}
+
+.app__loginform-headtext {
+  font-family: var(--font-base);
+  color: var(--color-black);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.app__loginform-container_input {
+  width: 100%;
+  padding: 10px;
+  padding-left: 40px;
+  font-size: 14px;
+  border: 0;
+  display: block;
+  margin: 3px auto 8px auto;
+  transition: ease-in-out 0.3s;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.app__loginform-container_input:focus {
+  outline: 0;
+  box-shadow: 0 0 0 2px var(--color-grey);
+}
+
+.app__loginform-container_inputIcon {
+  position: absolute;
+  font-size: 18px;
+  top: 38px;
+  left: 12px;
+  color: var(--color-grey);
+}
+
+.app__loginform-container_inputIconEye {
+  position: absolute;
+  font-size: 18px;
+  top: 38px;
+  right: 12px;
+  color: var(--color-grey);
+  cursor: pointer;
+}
+
+.app__loginform-container_label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--color-black);
+  text-align: left;
+  margin-top: 10px;
+}
+
+.app__loginform-container_errorMsg {
+  font-size: 10px;
+  color: red;
+  margin: -5px 0 5px 0;
+  text-align: left;
+}
+
+.app__loginform-container_signnow {
+  margin: 1rem 0;
+}
+
+.app__loginform-container_signnow p {
+  display: inline;
+  margin-right: 5px;
+}
+
+.auth-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-black);
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+}
+
+.auth-toggle-btn:hover {
+  color: var(--color-grey);
+}
+
+.app__loginform-container_copyright {
+  color: var(--color-black);
+  font-size: 12px;
+  margin-top: 1rem;
+}
+
+@media (max-width: 480px) {
+  .app__loginform-container {
+    padding: 1rem;
+  }
+
+  .app__loginform-headtext {
+    font-size: 28px;
+  }
+
+  .app__loginform-container_input {
+    padding: 8px;
+    padding-left: 35px;
+  }
+
+  .app__loginform-container_inputIcon,
+  .app__loginform-container_inputIconEye {
+    font-size: 16px;
+    top: 35px;
+  }
+}
