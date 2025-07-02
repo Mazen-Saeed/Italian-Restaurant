@@ -7,6 +7,7 @@ const router = express.Router();
 const services = {
   auth: process.env.AUTH_SERVICE_URL,
   email: process.env.EMAIL_SERVICE_URL,
+  user: process.env.USER_SERVICE_URL,
 };
 
 // For each entry, mount a proxy at /api/<name>

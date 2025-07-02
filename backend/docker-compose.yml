@@ -42,6 +42,21 @@ services:
     networks:
       - backend-network
 
+  user-service:
+    container_name: user-service
+    build: ./user-service
+    environment:
+      - NODE_ENV=production
+    expose:
+      - "3000"
+    env_file:
+      - ./user-service/.env
+    depends_on:
+      - postgres
+      - auth-service
+    networks:
+      - backend-network
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -49,10 +64,22 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+      - NODE_ENV=production
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  db-migrate:
+    build: ./migrations
+    depends_on:
+      - postgres
+    profiles:
+      - setup
+    env_file:
+      - ./migrations/.env
     networks:
       - backend-network
 

@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
-
-const privateKey = process.env.JWT_PRIVATE_KEY;
+const fs = require("fs");
+const path = require("path");
+const privateKey = fs.readFileSync(
+  path.join(__dirname, "../private.key"),
+  "utf8"
+);
 
 exports.generateToken = (userId, secret, expiresIn) => {
   let token;

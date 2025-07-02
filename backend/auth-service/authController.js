@@ -42,8 +42,15 @@ const sendConfirmationEmail = async (id, name, email) => {
 };
 
 exports.register = catchAsync(async (req, res, next) => {
-  const { name, username, email, password, passwordConfirm, address, phone } =
-    req.body;
+  const {
+    name,
+    username,
+    email,
+    password,
+    passwordConfirm,
+    dateOfBirth,
+    phone,
+  } = req.body;
 
   if (password !== passwordConfirm) {
     return next(new AppError("Passwords do not match", 400));
@@ -60,8 +67,8 @@ exports.register = catchAsync(async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, 12);
 
   const result = await pool.query(
-    "INSERT INTO users (name, username, email, password, role, address, phone) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-    [name, username, email, hashedPassword, "user", address, phone]
+    "INSERT INTO users (name, username, email, password, role, dateofbirth, phone) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+    [name, username, email, hashedPassword, "user", dateOfBirth, phone]
   );
 
   await sendConfirmationEmail(result.rows[0].id, name, email);
@@ -206,6 +213,10 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   } catch (err) {
     console.error("Error sending password reset email:", err);
   }
+  res.status(200).json({
+    status: "success",
+    message: "Password reset email sent successfully",
+  });
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
@@ -232,6 +243,15 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     hashedPassword,
     decoded.id,
   ]);
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 0,
+  };
+
+  res.clearCookie("accessToken", cookieOptions);
 
   res.status(200).json({ message: "Password reset successfully" });
 });
